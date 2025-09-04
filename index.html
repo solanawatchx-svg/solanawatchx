@@ -80,7 +80,6 @@
         async function main() {
             try {
                 connection = new solanaWeb3.Connection(HTTP_URL, 'confirmed');
-                // FIX: The global variable for Metaplex is 'mpl', not 'mplJs'
                 metaplex = new mpl.Metaplex(connection);
                 
                 updateStatus('Listening...', 'listening');
@@ -209,7 +208,17 @@
             statusIndicator.className = `status-dot status-${statusClass}`;
         }
 
-        main();
+        // FIX: Wait for external libraries to be fully loaded before starting the app.
+        function startApp() {
+            const readyCheck = setInterval(() => {
+                if (typeof solanaWeb3 !== 'undefined' && typeof mpl !== 'undefined') {
+                    clearInterval(readyCheck);
+                    main();
+                }
+            }, 100);
+        }
+        
+        window.onload = startApp;
     </script>
 </body>
 </html>
