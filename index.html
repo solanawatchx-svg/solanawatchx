@@ -1,225 +1,474 @@
-<!DOCTYPE html>
+              <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solana Gem Hunter</title>
-    <!-- Tailwind CSS -->
+    <title>Solana Watch X</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <!-- Solana Web3.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js@latest/lib/index.iife.min.js"></script>
-    <!-- Metaplex JS (for fetching token metadata) -->
-    <script src="https://cdn.jsdelivr.net/npm/@metaplex-foundation/js@0.19.4/dist/bundles/js.iife.min.js"></script>
-
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; }
-        .status-connecting { background-color: #f59e0b; }
-        .status-listening { background-color: #10b981; animation: pulse 2s infinite; }
-        .status-error { background-color: #ef4444; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .new-card-animation { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .token-image { object-fit: cover; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #020617; /* Slate-950 equivalent for dark theme */
+            color: #e2e8f0;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #4c1d95, #7c3aed, #4f46e5);
+        }
+        .text-gradient {
+            background-image: linear-gradient(to right, #a78bfa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        @keyframes subtle-fade-in {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: subtle-fade-in 1s ease-out forwards;
+        }
+        @keyframes pulse-light {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.2;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.3;
+            }
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-pulse-light {
+            animation: pulse-light 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .animate-rotate {
+            animation: rotate 20s linear infinite;
+        }
+        .logo-container {
+            position: relative;
+            width: 128px; /* For the image */
+            height: 128px;
+        }
+        .logo-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #a78bfa 0%, transparent 50%);
+            opacity: 0.5;
+            filter: blur(20px);
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            box-shadow: 
+                0 0 10px #818cf8, 
+                0 0 20px #818cf8, 
+                0 0 30px #a78bfa, 
+                0 0 40px #a78bfa;
+            animation: pulse-light 3s linear infinite alternate;
+            z-index: -1;
+        }
+        
+        /* Ticker specific styles */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background: rgba(17, 24, 39, 0.6);
+            backdrop-filter: blur(5px);
+            border-top: 2px solid #a78bfa;
+            border-bottom: 2px solid #a78bfa;
+            padding: 0.5rem 0;
+            box-shadow: inset 0 0 10px rgba(124, 58, 237, 0.5);
+            margin-bottom: 3rem;
+        }
+        .ticker {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll-ticker 35s linear infinite;
+        }
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #d1d5db;
+        }
+        .ticker-item span {
+            color: #818cf8;
+        }
+        @keyframes scroll-ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
-
-    <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400">Solana Gem Hunter</h1>
-            <p class="text-gray-400 mt-2">Cutting through the noise. Finding the signal. Your real-time guide to the Solana frontier.</p>
-            <div id="status-indicator" class="mt-4 flex items-center justify-center space-x-2 text-lg">
-                <span class="status-dot status-connecting"></span>
-                <span id="status-text">Connecting to Solana...</span>
+<body class="bg-slate-950 text-slate-200">
+    <!-- Hero Section -->
+    <header class="relative overflow-hidden py-16 md:py-32 text-center">
+        <!-- Background Animation -->
+        <div class="absolute inset-0 z-0">
+            <div class="absolute w-96 h-96 top-0 -left-1/4 rounded-full bg-blue-500 blur-3xl animate-pulse-light"></div>
+            <div class="absolute w-96 h-96 top-1/2 -right-1/4 rounded-full bg-purple-500 blur-3xl animate-pulse-light" style="animation-delay: 2s;"></div>
+            <div class="absolute w-[400px] h-[400px] bottom-0 left-1/2 -translate-x-1/2 rounded-full bg-indigo-500/50 blur-3xl animate-pulse-light" style="animation-delay: 4s;"></div>
+        </div>
+        <div class="relative z-10 px-4 md:px-8 max-w-5xl mx-auto">
+            <!-- Logo with Soul Flame Animation -->
+            <div class="flex justify-center mb-6 fade-in" style="animation-delay: 0.2s;">
+                <div class="logo-container flex items-center justify-center">
+                    <img src="https://res.cloudinary.com/dx51ohlya/image/upload/v1757056538/20250905_121234_qsbjrj.png" alt="Solana Watch X Logo" class="w-full h-full rounded-full shadow-lg z-10">
+                </div>
             </div>
-        </header>
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 text-white fade-in" style="animation-delay: 0.5s;">
+                Solana Watch X
+            </h1>
+            <p class="text-xl sm:text-2xl font-semibold text-slate-400 mb-8 fade-in" style="animation-delay: 1s;">
+                The Temporal Layer for Web3
+            </p>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-10 fade-in" style="animation-delay: 1.5s;">
+                Own Time. Program Time. Trade Time.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 fade-in" style="animation-delay: 2s;">
+                <!-- Get Whitelisted Button with Email Form -->
+                <button onclick="openWhitelistModal()" class="inline-block px-8 py-4 text-lg font-bold text-white rounded-full gradient-bg transition-all duration-300 hover:scale-105 shadow-lg">
+                    Get Whitelisted
+                </button>
+                <!-- Join Community Button with Telegram Link -->
+                <a href="https://t.me/+Rm2mc2VbI681MTRl" target="_blank" class="inline-block px-8 py-4 text-lg font-bold text-white rounded-full border border-purple-500 transition-all duration-300 hover:bg-purple-500 hover:text-white hover:scale-105 shadow-lg text-center">
+                    Join Community
+                </a>
+            </div>
+        </div>
+    </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <section id="pure-genuine-section">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="text-3xl mr-2">💎</span> Pure Genuine</h2>
-                <div id="pure-genuine-list" class="space-y-4">
-                    <div class="bg-gray-800 p-4 rounded-lg text-center text-gray-500">
-                        <p>Waiting for high-potential projects...</p>
-                    </div>
-                </div>
-            </section>
+    <!-- Live Ticker Section -->
+    <section class="ticker-wrap mt-10">
+        <div id="ticker" class="ticker">
+            <div class="ticker-item">Loading live market data...</div>
+        </div>
+    </section>
 
-            <section id="tradable-gems-section">
-                <h2 class="text-2xl font-bold mb-4 flex items-center"><span class="text-3xl mr-2">🎲</span> Tradable Gems</h2>
-                <div id="tradable-gems-list" class="space-y-4">
-                     <div class="bg-gray-800 p-4 rounded-lg text-center text-gray-500">
-                        <p>Scanning for early-stage, high-effort launches...</p>
-                    </div>
+    <main class="container mx-auto px-4 py-16">
+        <!-- What Makes It Revolutionary (Shortened) -->
+        <section id="features" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+                What Makes It Revolutionary
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">On-Chain Chrono Contracts</h3>
+                    <p class="text-slate-400">Contracts with time conditions built-in, removing centralization risk from schedules.</p>
                 </div>
-            </section>
-        </main>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Proof-of-Time Consensus</h3>
+                    <p class="text-slate-400">A new security layer where validators cryptographically prove the passage of time.</p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Time-NFTs</h3>
+                    <p class="text-slate-400">Dynamic NFTs that evolve, age, or grow based on time without external servers.</p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Web3 Subscriptions</h3>
+                    <p class="text-slate-400">Real decentralized subscriptions with on-chain access control that auto-expires.</p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Time as a Marketplace</h3>
+                    <p class="text-slate-400">Programmable and tradable time slots for DAOs, games, and more.</p>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Cross-Chain Temporal API</h3>
+                    <p class="text-slate-400">A time bridge that serves as a time oracle for other chains.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Killer Applications (Shortened) -->
+        <section class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+                Killer Applications
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">DeFi</h3>
+                    <p class="text-slate-400">Automated liquidations, vesting, and yield cycles.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">NFTs</h3>
+                    <p class="text-slate-400">Dynamic NFTs that age and evolve with time.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Gaming/Metaverse</h3>
+                    <p class="text-slate-400">On-chain day/night cycles and time-locked treasure chests.</p>
+                </div>
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">DAOs</h3>
+                    <p class="text-slate-400">Tamper-proof voting deadlines and proposal timelines.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tokenomics & Branding -->
+        <section class="mb-20">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Tokenomics Card -->
+                <div class="bg-gray-800 p-10 rounded-2xl shadow-xl">
+                    <h3 class="text-3xl font-bold mb-4 text-white">
+                        $WATCH Tokenomics
+                    </h3>
+                    <ul class="space-y-4 text-slate-400">
+                        <li>
+                            <span class="font-semibold text-white">Staking:</span> Staked by validators ("timekeepers") for providing accurate time.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Rewards:</span> Earn rewards for accurate time provision.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Slashing:</span> Penalized for dishonest or inaccurate timestamps.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Gas:</span> Used as gas for time-based smart contract calls.
+                        </li>
+                        <li>
+                            <span class="font-semibold text-white">Governance:</span> Grants control over protocol upgrades and integrations.
+                        </li>
+                    </ul>
+                </div>
+                <!-- Branding Card -->
+                <div class="bg-gray-800 p-10 rounded-2xl shadow-xl">
+                    <h3 class="text-3xl font-bold mb-4 text-white">
+                        Branding & Narrative
+                    </h3>
+                    <p class="mb-4 text-slate-400">
+                        The visual identity is a futuristic holographic wristwatch fused with Solana prism aesthetics.
+                    </p>
+                    <div class="relative w-full h-64 bg-slate-900 rounded-xl overflow-hidden shadow-inner flex items-center justify-center">
+                        <div class="relative w-40 h-40 border-4 border-purple-500 rounded-full flex items-center justify-center animate-rotate">
+                            <div class="absolute w-24 h-24 border-2 border-blue-500 rounded-full animate-rotate" style="animation-direction: reverse; animation-duration: 15s;"></div>
+                            <div class="absolute w-12 h-12 rounded-full bg-purple-500 animate-pulse"></div>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-xl font-semibold text-center text-slate-400">
+                         If Chainlink = price oracle, then Solana Watch X = time oracle.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section id="roadmap" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+                Roadmap
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8 lg:grid-cols-4">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 1: Foundation</h3>
+                    <ul class="list-disc list-inside text-slate-400">
+                        <li>Protocol Smart Contract Development</li>
+                        <li>Audits & Security Checks</li>
+                        <li>Initial Testnet Deployment</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 2: Launch</h3>
+                    <ul class="list-disc list-inside text-slate-400">
+                        <li>Mainnet Launch & Token Generation Event</li>
+                        <li>Whitelist Distribution</li>
+                        <li>First dApp Integration</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 3: Expansion</h3>
+                    <ul class="list-disc list-inside text-slate-400">
+                        <li>Cross-Chain Temporal API Beta</li>
+                        <li>NFT Project Partnerships</li>
+                        <li>Decentralized Governance Live</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 4: Ecosystem</h3>
+                    <ul class="list-disc list-inside text-slate-400">
+                        <li>Integration with Major DeFi Protocols</li>
+                        <li>On-Chain Gaming SDK Release</li>
+                        <li>Global Community Growth</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Share on X Section -->
+        <section class="mb-16 text-center">
+            <h2 class="text-2xl font-bold text-white mb-6">
+                Spread the word and join the movement!
+            </h2>
+            <a href="https://twitter.com/intent/tweet?text=I%27m%20joining%20the%20%40solanawatchx%20community%21%20This%20project%20is%20building%20a%20temporal%20layer%20for%20Web3%2C%20making%20time%20programmable%20on%20Solana.%20The%20next%20big%20thing%20in%20crypto.%20%23SolanaWatchX" target="_blank" class="inline-block px-8 py-4 text-lg font-bold text-white rounded-full border border-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:scale-105 shadow-lg">
+                Share on X
+            </a>
+        </section>
+
+        <!-- Live Community Feed Section -->
+        <section id="community" class="mb-20">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+                Live Community Feed
+            </h2>
+            <div class="flex justify-center">
+                <a class="twitter-timeline max-w-lg w-full"
+                   data-height="600"
+                   data-theme="dark"
+                   href="https://twitter.com/hashtag/SolanaWatchX?src=hashtag_click">
+                   Tweets about #SolanaWatchX
+                </a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer class="text-center py-8 text-slate-400 text-sm">
+        <p>Solana Watch X isn’t just tracking time — it makes time a building block of the decentralized future.</p>
+        <p class="mt-2">&copy; 2024 Solana Watch X. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Whitelist Modal -->
+    <div id="whitelistModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-purple-500 text-center max-w-sm mx-4 relative">
+            <button onclick="closeWhitelistModal()" class="absolute top-3 right-3 text-slate-400 hover:text-white transition-colors">&times;</button>
+            <h3 class="text-2xl font-bold mb-4 text-white">Join the Whitelist</h3>
+            <p class="text-slate-400 mb-6">Enter your email to get early access and updates on Solana Watch X.</p>
+            
+            <form action="https://formspree.io/f/xrbaoojd" method="POST" id="whitelist-form" class="space-y-4">
+                <input type="email" name="email" placeholder="Your Email Address" required class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <button type="submit" class="w-full px-4 py-3 text-lg font-bold text-white rounded-full gradient-bg transition-all duration-300 hover:scale-105">
+                    Submit
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Simple message box instead of alert() -->
+    <div id="messageBox" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg border border-purple-500 text-center max-w-sm mx-4">
+            <p id="messageText" class="text-lg font-semibold text-white mb-4"></p>
+            <button onclick="closeMessageBox()" class="px-6 py-2 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors">
+                Close
+            </button>
+        </div>
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        const HTTP_URL = "https://white-icy-emerald.solana-mainnet.quiknode.pro/e4327c6580423a70a91aacc3a4a8f6310b41249c/";
-        const RAYDIUM_LP_V4_PROGRAM_ID = "675kPX9MHTjS2zt1qfr1ciD72dSt3bSDEVVSELFAM2xK";
-        const RAYDIUM_CLMM_PROGRAM_ID = "CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7gr2Boshj";
-        const TOKEN_PROGRAM_ID = "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA";
-
-        // --- DOM ELEMENTS ---
-        const statusText = document.getElementById('status-text');
-        const statusIndicator = document.getElementById('status-indicator').querySelector('.status-dot');
-        const pureGemsList = document.getElementById('pure-genuine-list');
-        const tradableGemsList = document.getElementById('tradable-gems-list');
-
-        let isFirstToken = true;
-        let connection;
-        let metaplex;
-
-        // --- CORE LOGIC ---
-        async function main() {
-            try {
-                connection = new solanaWeb3.Connection(HTTP_URL, 'confirmed');
-                metaplex = new mpl.Metaplex(connection);
-                
-                updateStatus('Listening...', 'listening');
-                console.log("Connection successful. Metaplex initialized. Listening for new pools...");
-
-                const listenToProgram = (programId, keyword, name) => {
-                    connection.onLogs(
-                        new solanaWeb3.PublicKey(programId),
-                        (logs, context) => {
-                            if (logs.logs.some(log => log.includes(keyword))) {
-                                console.log(`[${name} Pool Detected] Signature: ${logs.signature}`);
-                                processNewToken(logs.signature);
-                            }
-                        },
-                        "confirmed"
-                    );
-                };
-
-                listenToProgram(RAYDIUM_LP_V4_PROGRAM_ID, "initialize2", "V4");
-                listenToProgram(RAYDIUM_CLMM_PROGRAM_ID, "OpenPosition", "CLMM");
-
-            } catch (error) {
-                console.error("Initialization Error:", error);
-                updateStatus('Connection Failed. Please refresh.', 'error');
-            }
+        function showMessageBox(message) {
+            document.getElementById('messageText').innerText = message;
+            document.getElementById('messageBox').classList.remove('hidden');
+            document.getElementById('messageBox').classList.add('flex');
         }
 
-        // --- TOKEN PROCESSING & UI RENDERING ---
-        async function processNewToken(signature) {
-            try {
-                const tx = await connection.getParsedTransaction(signature, { maxSupportedTransactionVersion: 0 });
-                if (!tx) return;
+        function closeMessageBox() {
+            document.getElementById('messageBox').classList.remove('flex');
+            document.getElementById('messageBox').classList.add('hidden');
+        }
 
-                const { preTokenBalances, postTokenBalances } = tx.meta;
-                const mintAccount = postTokenBalances.find(balance => 
-                    balance.uiTokenAmount.decimals > 0 && 
-                    !preTokenBalances.some(pre => pre.mint === balance.mint)
+        function openWhitelistModal() {
+            document.getElementById('whitelistModal').classList.remove('hidden');
+            document.getElementById('whitelistModal').classList.add('flex');
+        }
+
+        function closeWhitelistModal() {
+            document.getElementById('whitelistModal').classList.remove('flex');
+            document.getElementById('whitelistModal').classList.add('hidden');
+        }
+
+        // Add smooth scroll for the "Explore" button
+        document.querySelector('a[href="#features"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Handle Formspree submission
+        document.getElementById('whitelist-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                closeWhitelistModal();
+                if (response.ok) {
+                    showMessageBox("Thank you for joining the whitelist! We'll be in touch.");
+                    form.reset();
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwnProperty.call(data, 'errors')) {
+                            showMessageBox(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            showMessageBox("Oops! There was a problem with your submission. Please try again later.");
+                        }
+                    }).catch(() => {
+                        showMessageBox("Oops! There was a problem with your submission. Please try again later.");
+                    });
+                }
+            }).catch(() => {
+                closeWhitelistModal();
+                showMessageBox("Oops! There was a problem with your submission. Please try again later.");
+            });
+        });
+
+        // Ticker Logic
+        async function loadTicker() {
+            try {
+                // === 1. Get major prices (BTC, ETH, SOL) from CoinGecko ===
+                const cgUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd";
+                const cgRes = await fetch(cgUrl);
+                const cgData = await cgRes.json();
+
+                const prices = [
+                    `<span class="ticker-item">₿ BTC → $${cgData.bitcoin.usd}</span>`,
+                    `<span class="ticker-item">Ξ ETH → $${cgData.ethereum.usd}</span>`,
+                    `<span class="ticker-item">◎ SOL → $${cgData.solana.usd}</span>`
+                ];
+
+                // === 2. Get latest Solana listings from Dexscreener ===
+                const dsUrl = "https://api.dexscreener.com/latest/dex/tokens/solana";
+                const dsRes = await fetch(dsUrl);
+                const dsData = await dsRes.json();
+                
+                const listings = dsData.pairs.slice(0, 10).map(pair =>
+                    `<span class="ticker-item">💎 ${pair.baseToken.symbol}/${pair.quoteToken.symbol} → $${pair.priceUsd ? Number(pair.priceUsd).toFixed(4) : "N/A"}</span>`
                 );
 
-                if (!mintAccount) {
-                    console.log(`Could not find a new mint in tx ${signature}. Skipping.`);
-                    return;
-                }
+                // === 3. Combine and display ===
+                const ticker = document.getElementById("ticker");
+                ticker.innerHTML = [...prices, ...listings].join("");
 
-                const mintAddress = mintAccount.mint;
-                console.log(`New Mint Address Found: ${mintAddress}`);
-
-                const metadata = await metaplex.nfts().findByMint({ mintAddress: new solanaWeb3.PublicKey(mintAddress) });
-                
-                if (!metadata || !metadata.name || !metadata.symbol) {
-                    console.log(`Metadata not found for ${mintAddress}. Skipping.`);
-                    return;
-                }
-
-                const tokenData = {
-                    address: mintAddress,
-                    name: metadata.name,
-                    symbol: metadata.symbol,
-                    image: metadata.json?.image,
-                    liquidity: Math.floor(Math.random() * 50000) + 1000, // Still an estimate
-                    solscanLink: `https://solscan.io/token/${mintAddress}`,
-                    txLink: `https://solscan.io/tx/${signature}`
-                };
-                
-                // Randomly assign for now
-                const isGenuine = Math.random() < 0.2;
-                const list = isGenuine ? pureGemsList : tradableGemsList;
-                const category = isGenuine ? "💎 Pure Genuine" : "🎲 Tradable Gem";
-                
-                addTokenCard(tokenData, list, category);
-
-            } catch (e) {
-                console.error(`Error processing transaction ${signature}:`, e);
+            } catch (err) {
+                console.error(err);
+                document.getElementById("ticker").innerHTML = `<div class="ticker-item">⚠️ Error loading market data</div>`;
             }
         }
 
-        function addTokenCard(token, listElement, category) {
-            if (isFirstToken) {
-                pureGemsList.innerHTML = '';
-                tradableGemsList.innerHTML = '';
-                isFirstToken = false;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-700 new-card-animation';
-            
-            const imageHtml = token.image 
-                ? `<img src="${token.image}" alt="${token.name}" class="w-12 h-12 rounded-full token-image mr-4">`
-                : `<div class="w-12 h-12 rounded-full bg-purple-500 flex items-center justify-center font-bold text-xl mr-4">${token.symbol.charAt(0)}</div>`;
-
-            card.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center">
-                        ${imageHtml}
-                        <div>
-                            <h3 class="font-bold text-lg">${token.name} (${token.symbol})</h3>
-                            <p class="text-sm text-gray-400 truncate w-40 md:w-full" title="${token.address}">${token.address}</p>
-                        </div>
-                    </div>
-                    <div class="text-right flex-shrink-0">
-                        <p class="font-semibold text-green-400">$${token.liquidity.toLocaleString()}</p>
-                        <p class="text-xs text-gray-500">Liquidity (Est.)</p>
-                    </div>
-                </div>
-                <div class="mt-4 flex justify-between items-center text-sm">
-                    <div class="flex space-x-4 text-gray-400">
-                        <a href="#" class="hover:text-white" title="Website"><i class="fas fa-globe"></i></a>
-                        <a href="#" class="hover:text-white" title="Twitter/X"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="hover:text-white" title="Telegram"><i class="fab fa-telegram"></i></a>
-                    </div>
-                    <div>
-                        <a href="${token.solscanLink}" target="_blank" class="bg-gray-700 hover:bg-purple-600 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-200">
-                            Token <i class="fas fa-external-link-alt ml-1"></i>
-                        </a>
-                         <a href="${token.txLink}" target="_blank" class="bg-gray-700 hover:bg-purple-600 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-200 mt-1 md:mt-0 md:ml-2 inline-block">
-                            TX <i class="fas fa-external-link-alt ml-1"></i>
-                        </a>
-                    </div>
-                </div>
-            `;
-            listElement.prepend(card);
-        }
-
-        function updateStatus(text, statusClass) {
-            statusText.textContent = text;
-            statusIndicator.className = `status-dot status-${statusClass}`;
-        }
-
-        // FIX: Wait for external libraries to be fully loaded before starting the app.
-        function startApp() {
-            const readyCheck = setInterval(() => {
-                if (typeof solanaWeb3 !== 'undefined' && typeof mpl !== 'undefined') {
-                    clearInterval(readyCheck);
-                    main();
-                }
-            }, 100);
-        }
-        
-        window.onload = startApp;
+        loadTicker();
+        setInterval(loadTicker, 15000); // refresh every 15s
     </script>
 </body>
 </html>
 
+  
