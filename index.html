@@ -83,29 +83,44 @@
             z-index: -1;
         }
 
-        /* Ticker styles */
-        .ticker-wrap {
-            width: 100%;
-            overflow: hidden;
-            background: #0f172a; /* Slate-900 */
-            border-top: 2px solid #00ffcc;
-            border-bottom: 2px solid #00ffcc;
+        /* Tokenomics Chart Styling */
+        .tokenomics-chart {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: conic-gradient(
+                #4f46e5 0% 40%,
+                #818cf8 40% 70%,
+                #a78bfa 70% 85%,
+                #d8b4fe 85% 100%
+            );
             position: relative;
         }
-        .ticker {
-            display: inline-block;
-            white-space: nowrap;
-            animation: scroll 40s linear infinite;
+        .tokenomics-chart-inner {
+            width: 150px;
+            height: 150px;
+            background-color: #020617;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: #e2e8f0;
         }
-        .ticker-item {
-            display: inline-block;
-            padding: 0 2rem;
-            font-size: 1rem;
-            line-height: 3rem;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
         }
-        @keyframes scroll {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
+        .legend-color {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+            margin-right: 0.5rem;
         }
     </style>
 </head>
@@ -147,11 +162,6 @@
         </div>
     </header>
 
-    <!-- Hybrid Ticker -->
-    <div class="ticker-wrap">
-        <div id="ticker" class="ticker">Loading feed...</div>
-    </div>
-
     <main class="container mx-auto px-4 py-16">
         <!-- What Makes It Revolutionary (Shortened) -->
         <section id="features" class="mb-20">
@@ -160,28 +170,28 @@
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
-                    <h3 class="text-2xl font-semibold mb-2 text-white">On-Chain Chrono Contracts</h3>
-                    <p class="text-slate-400">Contracts with time conditions built-in, removing centralization risk from schedules.</p>
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Chrono Contracts</h3>
+                    <p class="text-slate-400">Smart contracts with native time conditions.</p>
                 </div>
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
-                    <h3 class="text-2xl font-semibold mb-2 text-white">Proof-of-Time Consensus</h3>
-                    <p class="text-slate-400">A new security layer where validators cryptographically prove the passage of time.</p>
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Proof-of-Time</h3>
+                    <p class="text-slate-400">A new security layer to prevent timestamp exploits.</p>
                 </div>
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Time-NFTs</h3>
-                    <p class="text-slate-400">Dynamic NFTs that evolve, age, or grow based on time without external servers.</p>
+                    <p class="text-slate-400">Dynamic NFTs that evolve with time on-chain.</p>
                 </div>
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Web3 Subscriptions</h3>
-                    <p class="text-slate-400">Real decentralized subscriptions with on-chain access control that auto-expires.</p>
+                    <p class="text-slate-400">Decentralized, auto-expiring access control.</p>
                 </div>
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Time as a Marketplace</h3>
-                    <p class="text-slate-400">Programmable and tradable time slots for DAOs, games, and more.</p>
+                    <p class="text-slate-400">Programmable and tradable time slots.</p>
                 </div>
                 <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
-                    <h3 class="text-2xl font-semibold mb-2 text-white">Cross-Chain Temporal API</h3>
-                    <p class="text-slate-400">A time bridge that serves as a time oracle for other chains.</p>
+                    <h3 class="text-2xl font-semibold mb-2 text-white">Cross-Chain API</h3>
+                    <p class="text-slate-400">A time bridge for other blockchains.</p>
                 </div>
             </div>
         </section>
@@ -194,19 +204,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">DeFi</h3>
-                    <p class="text-slate-400">Automated liquidations, vesting, and yield cycles.</p>
+                    <p class="text-slate-400">Automated cycles and liquidations.</p>
                 </div>
                 <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">NFTs</h3>
-                    <p class="text-slate-400">Dynamic NFTs that age and evolve with time.</p>
+                    <p class="text-slate-400">Evolving and dynamic digital assets.</p>
                 </div>
                 <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
-                    <h3 class="text-2xl font-bold mb-2 text-gradient">Gaming/Metaverse</h3>
-                    <p class="text-slate-400">On-chain day/night cycles and time-locked treasure chests.</p>
+                    <h3 class="text-2xl font-bold mb-2 text-gradient">Gaming</h3>
+                    <p class="text-slate-400">On-chain day/night cycles and time-locked events.</p>
                 </div>
                 <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">DAOs</h3>
-                    <p class="text-slate-400">Tamper-proof voting deadlines and proposal timelines.</p>
+                    <p class="text-slate-400">Transparent and tamper-proof voting deadlines.</p>
                 </div>
             </div>
         </section>
@@ -214,29 +224,38 @@
         <!-- Tokenomics & Branding -->
         <section class="mb-20">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
-                <!-- Tokenomics Card -->
-                <div class="bg-gray-800 p-10 rounded-2xl shadow-xl">
-                    <h3 class="text-3xl font-bold mb-4 text-white">
+                <!-- Tokenomics Chart -->
+                <div class="p-10 rounded-2xl flex flex-col items-center justify-center">
+                    <h3 class="text-3xl font-bold mb-8 text-white text-center">
                         $WATCH Tokenomics
                     </h3>
-                    <ul class="space-y-4 text-slate-400">
-                        <li>
-                            <span class="font-semibold text-white">Staking:</span> Staked by validators ("timekeepers") for providing accurate time.
-                        </li>
-                        <li>
-                            <span class="font-semibold text-white">Rewards:</span> Earn rewards for accurate time provision.
-                        </li>
-                        <li>
-                            <span class="font-semibold text-white">Slashing:</span> Penalized for dishonest or inaccurate timestamps.
-                        </li>
-                        <li>
-                            <span class="font-semibold text-white">Gas:</span> Used as gas for time-based smart contract calls.
-                        </li>
-                        <li>
-                            <span class="font-semibold text-white">Governance:</span> Grants control over protocol upgrades and integrations.
-                        </li>
-                    </ul>
+                    <div class="flex flex-col md:flex-row items-center gap-8">
+                        <div class="tokenomics-chart">
+                            <div class="tokenomics-chart-inner">
+                                <span class="text-xl font-bold">$WATCH</span>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-start text-sm">
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #4f46e5;"></span>
+                                <span>40% Staking & Rewards</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #818cf8;"></span>
+                                <span>30% Ecosystem Fund</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #a78bfa;"></span>
+                                <span>15% Team & Advisors</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color" style="background-color: #d8b4fe;"></span>
+                                <span>15% Public Sale</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
                 <!-- Branding Card -->
                 <div class="bg-gray-800 p-10 rounded-2xl shadow-xl">
                     <h3 class="text-3xl font-bold mb-4 text-white">
@@ -422,38 +441,6 @@
                 showMessageBox("Oops! There was a problem with your submission. Please try again later.");
             });
         });
-
-        // Ticker Logic
-        async function loadFeed() {
-            try {
-                // === 1. Your custom announcements ===
-                const announcements = [
-                    "🚀 SolanaWatchX Presale starts soon!",
-                    "🔥 Whitelist is now LIVE – Join now!",
-                    "📜 Roadmap: Phase 1 almost complete!",
-                    "💎 Next-gen crypto market tracking platform!",
-                ].map(msg => `<span class="ticker-item">${msg}</span>`);
-
-                // === 2. Live Crypto News from CryptoPanic ===
-                const url = "https://cryptopanic.com/api/v1/posts/?auth_token=demo&public=true";
-                const res = await fetch(url);
-                const data = await res.json();
-
-                const news = data.results.slice(0, 7).map(article =>
-                    `<span class="ticker-item">📰 ${article.title}</span>`
-                );
-
-                // === 3. Combine announcements + news ===
-                const ticker = document.getElementById("ticker");
-                ticker.innerHTML = [...announcements, ...news].join("");
-            } catch (err) {
-                console.error(err);
-                document.getElementById("ticker").innerText = "⚠️ Error loading feed";
-            }
-        }
-
-        loadFeed();
-        setInterval(loadFeed, 60000); // refresh every 60s
     </script>
 </body>
 </html>
