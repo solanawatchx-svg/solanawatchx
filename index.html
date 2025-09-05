@@ -82,7 +82,6 @@
             animation: pulse-light 3s linear infinite alternate;
             z-index: -1;
         }
-
         /* Tokenomics Chart Styling */
         .tokenomics-chart {
             width: 250px;
@@ -121,6 +120,16 @@
             height: 1rem;
             border-radius: 0.25rem;
             margin-right: 0.5rem;
+        }
+        /* Scroll Animations */
+        .scroll-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
         }
     </style>
 </head>
@@ -165,31 +174,31 @@
     <main class="container mx-auto px-4 py-16">
         <!-- What Makes It Revolutionary (Shortened) -->
         <section id="features" class="mb-20">
-            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white scroll-in">
                 What Makes It Revolutionary
             </h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300 scroll-in" data-delay="0.1s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Chrono Contracts</h3>
                     <p class="text-slate-400">Smart contracts with native time conditions.</p>
                 </div>
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300 scroll-in" data-delay="0.2s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Proof-of-Time</h3>
                     <p class="text-slate-400">A new security layer to prevent timestamp exploits.</p>
                 </div>
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300 scroll-in" data-delay="0.3s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Time-NFTs</h3>
                     <p class="text-slate-400">Dynamic NFTs that evolve with time on-chain.</p>
                 </div>
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300 scroll-in" data-delay="0.4s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Web3 Subscriptions</h3>
                     <p class="text-slate-400">Decentralized, auto-expiring access control.</p>
                 </div>
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-purple-500/20 transition-shadow duration-300 scroll-in" data-delay="0.5s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Time as a Marketplace</h3>
                     <p class="text-slate-400">Programmable and tradable time slots.</p>
                 </div>
-                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-xl hover:shadow-blue-500/20 transition-shadow duration-300 scroll-in" data-delay="0.6s">
                     <h3 class="text-2xl font-semibold mb-2 text-white">Cross-Chain API</h3>
                     <p class="text-slate-400">A time bridge for other blockchains.</p>
                 </div>
@@ -198,23 +207,23 @@
 
         <!-- Killer Applications (Shortened) -->
         <section class="mb-20">
-            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white scroll-in">
                 Killer Applications
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center scroll-in" data-delay="0.1s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">DeFi</h3>
                     <p class="text-slate-400">Automated cycles and liquidations.</p>
                 </div>
-                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center scroll-in" data-delay="0.2s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">NFTs</h3>
                     <p class="text-slate-400">Evolving and dynamic digital assets.</p>
                 </div>
-                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center scroll-in" data-delay="0.3s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">Gaming</h3>
                     <p class="text-slate-400">On-chain day/night cycles and time-locked events.</p>
                 </div>
-                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center">
+                <div class="p-6 rounded-xl bg-gray-800 shadow-lg text-center scroll-in" data-delay="0.4s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">DAOs</h3>
                     <p class="text-slate-400">Transparent and tamper-proof voting deadlines.</p>
                 </div>
@@ -225,7 +234,7 @@
         <section class="mb-20">
             <div class="grid lg:grid-cols-2 gap-12 items-center">
                 <!-- Tokenomics Chart -->
-                <div class="p-10 rounded-2xl flex flex-col items-center justify-center">
+                <div class="p-10 rounded-2xl flex flex-col items-center justify-center scroll-in" data-delay="0.1s">
                     <h3 class="text-3xl font-bold mb-8 text-white text-center">
                         $WATCH Tokenomics
                     </h3>
@@ -257,7 +266,7 @@
                 </div>
 
                 <!-- Branding Card -->
-                <div class="bg-gray-800 p-10 rounded-2xl shadow-xl">
+                <div class="bg-gray-800 p-10 rounded-2xl shadow-xl scroll-in" data-delay="0.2s">
                     <h3 class="text-3xl font-bold mb-4 text-white">
                         Branding & Narrative
                     </h3>
@@ -279,11 +288,11 @@
 
         <!-- Roadmap Section -->
         <section id="roadmap" class="mb-20">
-            <h2 class="text-4xl font-bold text-center mb-12 text-white">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white scroll-in">
                 Roadmap
             </h2>
             <div class="grid md:grid-cols-2 gap-8 lg:grid-cols-4">
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg scroll-in" data-delay="0.1s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 1: Foundation</h3>
                     <ul class="list-disc list-inside text-slate-400">
                         <li>Protocol Smart Contract Development</li>
@@ -291,7 +300,7 @@
                         <li>Initial Testnet Deployment</li>
                     </ul>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg scroll-in" data-delay="0.2s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 2: Launch</h3>
                     <ul class="list-disc list-inside text-slate-400">
                         <li>Mainnet Launch & Token Generation Event</li>
@@ -299,7 +308,7 @@
                         <li>First dApp Integration</li>
                     </ul>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg scroll-in" data-delay="0.3s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 3: Expansion</h3>
                     <ul class="list-disc list-inside text-slate-400">
                         <li>Cross-Chain Temporal API Beta</li>
@@ -307,7 +316,7 @@
                         <li>Decentralized Governance Live</li>
                     </ul>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg scroll-in" data-delay="0.4s">
                     <h3 class="text-2xl font-bold mb-2 text-gradient">Phase 4: Ecosystem</h3>
                     <ul class="list-disc list-inside text-slate-400">
                         <li>Integration with Major DeFi Protocols</li>
@@ -319,29 +328,13 @@
         </section>
 
         <!-- Share on X Section -->
-        <section class="mb-16 text-center">
+        <section class="mb-16 text-center scroll-in">
             <h2 class="text-2xl font-bold text-white mb-6">
                 Spread the word and join the movement!
             </h2>
             <a href="https://twitter.com/intent/tweet?text=I%27m%20joining%20the%20%40solanawatchx%20community%21%20This%20project%20is%20building%20a%20temporal%20layer%20for%20Web3%2C%20making%20time%20programmable%20on%20Solana.%20The%20next%20big%20thing%20in%20crypto.%20%23SolanaWatchX" target="_blank" class="inline-block px-8 py-4 text-lg font-bold text-white rounded-full border border-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:scale-105 shadow-lg">
                 Share on X
             </a>
-        </section>
-
-        <!-- Live Community Feed Section -->
-        <section id="community" class="mb-20">
-            <h2 class="text-4xl font-bold text-center mb-12 text-white">
-                Live Community Feed
-            </h2>
-            <div class="flex justify-center">
-                <a class="twitter-timeline max-w-lg w-full"
-                   data-height="600"
-                   data-theme="dark"
-                   href="https://twitter.com/hashtag/SolanaWatchX?src=hashtag_click">
-                   Tweets about #SolanaWatchX
-                </a>
-                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-            </div>
         </section>
 
     </main>
@@ -400,15 +393,6 @@
             document.getElementById('whitelistModal').classList.add('hidden');
         }
 
-        // Add smooth scroll for the "Explore" button
-        document.querySelector('a[href="#features"]').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-
-        // Handle Formspree submission
         document.getElementById('whitelist-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const form = event.target;
@@ -420,15 +404,16 @@
                 headers: {
                     'Accept': 'application/json'
                 }
-            }).then(response => {
+            })
+            .then(response => {
                 closeWhitelistModal();
                 if (response.ok) {
                     showMessageBox("Thank you for joining the whitelist! We'll be in touch.");
                     form.reset();
                 } else {
                     response.json().then(data => {
-                        if (Object.hasOwnProperty.call(data, 'errors')) {
-                            showMessageBox(data["errors"].map(error => error["message"]).join(", "));
+                        if (data.errors) {
+                            showMessageBox(data.errors.map(error => error.message).join(", "));
                         } else {
                             showMessageBox("Oops! There was a problem with your submission. Please try again later.");
                         }
@@ -436,10 +421,27 @@
                         showMessageBox("Oops! There was a problem with your submission. Please try again later.");
                     });
                 }
-            }).catch(() => {
+            })
+            .catch(() => {
                 closeWhitelistModal();
                 showMessageBox("Oops! There was a problem with your submission. Please try again later.");
             });
+        });
+
+        // Scroll Animation Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const delay = entry.target.getAttribute('data-delay') || '0s';
+                    entry.target.style.transitionDelay = delay;
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target); // Unobserve after it becomes visible
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.scroll-in').forEach(el => {
+            observer.observe(el);
         });
     </script>
 </body>
