@@ -1,4 +1,4 @@
-              <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -82,35 +82,28 @@
             animation: pulse-light 3s linear infinite alternate;
             z-index: -1;
         }
-        
-        /* Ticker specific styles */
+
+        /* Ticker styles */
         .ticker-wrap {
             width: 100%;
             overflow: hidden;
-            background: rgba(17, 24, 39, 0.6);
-            backdrop-filter: blur(5px);
-            border-top: 2px solid #a78bfa;
-            border-bottom: 2px solid #a78bfa;
-            padding: 0.5rem 0;
-            box-shadow: inset 0 0 10px rgba(124, 58, 237, 0.5);
-            margin-bottom: 3rem;
+            background: #0f172a; /* Slate-900 */
+            border-top: 2px solid #00ffcc;
+            border-bottom: 2px solid #00ffcc;
+            position: relative;
         }
         .ticker {
             display: inline-block;
             white-space: nowrap;
-            animation: scroll-ticker 35s linear infinite;
+            animation: scroll 40s linear infinite;
         }
         .ticker-item {
             display: inline-block;
             padding: 0 2rem;
             font-size: 1rem;
-            font-weight: 600;
-            color: #d1d5db;
+            line-height: 3rem;
         }
-        .ticker-item span {
-            color: #818cf8;
-        }
-        @keyframes scroll-ticker {
+        @keyframes scroll {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
@@ -154,12 +147,10 @@
         </div>
     </header>
 
-    <!-- Live Ticker Section -->
-    <section class="ticker-wrap mt-10">
-        <div id="ticker" class="ticker">
-            <div class="ticker-item">Loading live market data...</div>
-        </div>
-    </section>
+    <!-- Hybrid Ticker -->
+    <div class="ticker-wrap">
+        <div id="ticker" class="ticker">Loading feed...</div>
+    </div>
 
     <main class="container mx-auto px-4 py-16">
         <!-- What Makes It Revolutionary (Shortened) -->
@@ -433,42 +424,37 @@
         });
 
         // Ticker Logic
-        async function loadTicker() {
+        async function loadFeed() {
             try {
-                // === 1. Get major prices (BTC, ETH, SOL) from CoinGecko ===
-                const cgUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd";
-                const cgRes = await fetch(cgUrl);
-                const cgData = await cgRes.json();
+                // === 1. Your custom announcements ===
+                const announcements = [
+                    "🚀 SolanaWatchX Presale starts soon!",
+                    "🔥 Whitelist is now LIVE – Join now!",
+                    "📜 Roadmap: Phase 1 almost complete!",
+                    "💎 Next-gen crypto market tracking platform!",
+                ].map(msg => `<span class="ticker-item">${msg}</span>`);
 
-                const prices = [
-                    `<span class="ticker-item">₿ BTC → $${cgData.bitcoin.usd}</span>`,
-                    `<span class="ticker-item">Ξ ETH → $${cgData.ethereum.usd}</span>`,
-                    `<span class="ticker-item">◎ SOL → $${cgData.solana.usd}</span>`
-                ];
+                // === 2. Live Crypto News from CryptoPanic ===
+                const url = "https://cryptopanic.com/api/v1/posts/?auth_token=demo&public=true";
+                const res = await fetch(url);
+                const data = await res.json();
 
-                // === 2. Get latest Solana listings from Dexscreener ===
-                const dsUrl = "https://api.dexscreener.com/latest/dex/tokens/solana";
-                const dsRes = await fetch(dsUrl);
-                const dsData = await dsRes.json();
-                
-                const listings = dsData.pairs.slice(0, 10).map(pair =>
-                    `<span class="ticker-item">💎 ${pair.baseToken.symbol}/${pair.quoteToken.symbol} → $${pair.priceUsd ? Number(pair.priceUsd).toFixed(4) : "N/A"}</span>`
+                const news = data.results.slice(0, 7).map(article =>
+                    `<span class="ticker-item">📰 ${article.title}</span>`
                 );
 
-                // === 3. Combine and display ===
+                // === 3. Combine announcements + news ===
                 const ticker = document.getElementById("ticker");
-                ticker.innerHTML = [...prices, ...listings].join("");
-
+                ticker.innerHTML = [...announcements, ...news].join("");
             } catch (err) {
                 console.error(err);
-                document.getElementById("ticker").innerHTML = `<div class="ticker-item">⚠️ Error loading market data</div>`;
+                document.getElementById("ticker").innerText = "⚠️ Error loading feed";
             }
         }
 
-        loadTicker();
-        setInterval(loadTicker, 15000); // refresh every 15s
+        loadFeed();
+        setInterval(loadFeed, 60000); // refresh every 60s
     </script>
 </body>
 </html>
 
-  
