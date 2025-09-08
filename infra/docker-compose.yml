@@ -1,0 +1,77 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-swx}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swxpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-swx}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  ingestion-service:
+    build: ../../packages/ingestion-service
+    env_file:
+      - ../../packages/ingestion-service/.env
+    environment:
+      RABBITMQ_URL: ${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672/}
+      RPC_WSS_ENDPOINT: ${RPC_WSS_ENDPOINT:-wss://mainnet.helius-rpc.com/?api-key=YOUR_KEY}
+      PUMPFUN_PROGRAM_ID: ${PUMPFUN_PROGRAM_ID:-6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P}
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
+
+  analytics-service:
+    build: ../../packages/analytics-service
+    env_file:
+      - ../../packages/analytics-service/.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://swx:swxpassword@postgres:5432/swx}
+      RABBITMQ_URL: ${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672/}
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  analytics-worker:
+    build: ../../packages/analytics-service
+    env_file:
+      - ../../packages/analytics-service/.env
+    command: ["python", "-m", "app.workers.consumer"]
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://swx:swxpassword@postgres:5432/swx}
+      RABBITMQ_URL: ${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672/}
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: unless-stopped
+
+  frontend-app:
+    build: ../../packages/frontend-app
+    env_file:
+      - ../../packages/frontend-app/.env
+    environment:
+      NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-http://localhost:8000}
+      NEXT_PUBLIC_WS_API_URL: ${NEXT_PUBLIC_WS_API_URL:-ws://localhost:8000/ws}
+    depends_on:
+      - analytics-service
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

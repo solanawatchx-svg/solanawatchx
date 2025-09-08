@@ -1,0 +1,21 @@
+# Node
+node_modules/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Env
+.env
+packages/*/.env
+
+# Next.js
+packages/frontend-app/.next/
+packages/frontend-app/out/
+
+# OS
+.DS_Store
+Thumbs.db
+
