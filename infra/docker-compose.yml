@@ -22,9 +22,9 @@ services:
       - "15672:15672"
 
   ingestion-service:
-    build: ../../packages/ingestion-service
+    build: ./packages/ingestion-service
     env_file:
-      - ../../packages/ingestion-service/.env
+      - ./packages/ingestion-service/.env
     environment:
       RABBITMQ_URL: ${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672/}
       RPC_WSS_ENDPOINT: ${RPC_WSS_ENDPOINT:-wss://mainnet.helius-rpc.com/?api-key=YOUR_KEY}
@@ -34,9 +34,9 @@ services:
     restart: unless-stopped
 
   analytics-service:
-    build: ../../packages/analytics-service
+    build: ./packages/analytics-service
     env_file:
-      - ../../packages/analytics-service/.env
+      - ./packages/analytics-service/.env
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://swx:swxpassword@postgres:5432/swx}
       RABBITMQ_URL: ${RABBITMQ_URL:-amqp://guest:guest@rabbitmq:5672/}
@@ -48,9 +48,9 @@ services:
     restart: unless-stopped
 
   analytics-worker:
-    build: ../../packages/analytics-service
+    build: ./packages/analytics-service
     env_file:
-      - ../../packages/analytics-service/.env
+      - ./packages/analytics-service/.env
     command: ["python", "-m", "app.workers.consumer"]
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+asyncpg://swx:swxpassword@postgres:5432/swx}
@@ -61,9 +61,9 @@ services:
     restart: unless-stopped
 
   frontend-app:
-    build: ../../packages/frontend-app
+    build: ./packages/frontend-app
     env_file:
-      - ../../packages/frontend-app/.env
+      - ./packages/frontend-app/.env
     environment:
       NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-http://localhost:8000}
       NEXT_PUBLIC_WS_API_URL: ${NEXT_PUBLIC_WS_API_URL:-ws://localhost:8000/ws}
